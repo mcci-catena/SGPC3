@@ -71,7 +71,7 @@ int SGPC3::readFeatureSet()
 			#ifdef ARDUINO_ARCH_ESP32
 				setError("error in i2c_write");
 			#else
-				setError(F("error in i2c_write"));
+				setError(F("readFeatureSet: error in i2c_write"));
 			#endif
         return -1;
     }
@@ -83,7 +83,7 @@ int SGPC3::readFeatureSet()
 			#ifdef ARDUINO_ARCH_ESP32
 				setError("error in i2c_read");
 			#else
-				setError(F("error in i2c_read"));
+				setError(F("readFeatureSet: error in i2c_read"));
 			#endif
         return -3;
     }
@@ -521,11 +521,15 @@ int8_t SGPC3::i2c_write(uint8_t addr, const uint8_t* data, uint16_t count)
 {
     Wire.beginTransmission(addr);
     for (int i = 0; i < count; ++i) {
-        if (Wire.write(data[i]) != 1) {				
-            return false;
+        if (Wire.write(data[i]) != 1) {
+	    Serial.println("i2c_write: Wire.write() != 1");
+            return -1;
         }
     }
-    if (Wire.endTransmission() != 0) {
+    auto rc = Wire.endTransmission();
+    if (rc != 0) {
+	Serial.print("i2c_write: Wire.endTransmission() != 0: ");
+	Serial.println(unsigned(rc));
         return -1;
     }
     return 0;
