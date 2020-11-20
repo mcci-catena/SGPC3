@@ -107,7 +107,7 @@ class SGPC3 : public SGPC3_base
 {
 	public:
     //! \brief version of library, for use by clients in static_asserts
-    static constexpr std::uint32_t kVersion = makeVersion(1,1,0,0);
+    static constexpr std::uint32_t kVersion = makeVersion(0,1,0,0);
 
     //! \brief type signature for user-supplied delay function
     typedef void (delay_millis_t)(void *pClientData, std::uint32_t millis);
