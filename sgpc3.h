@@ -55,16 +55,62 @@ enum downTime_t
 	LT_1_WEEK = 3,
 	LT_FOREVER = 4,
 };
-		
+
+//! Helper class to get `makeVersion()` defined so we can use it in the class.
+class SGPC3_base
+{
+  public:
+    //! \brief create a version number for comparison
+    static constexpr std::uint32_t
+    makeVersion(
+        std::uint8_t major, std::uint8_t minor, std::uint8_t patch, std::uint8_t local = 0
+        )
+        {
+        return ((std::uint32_t)major << 24u) | ((std::uint32_t)minor << 16u) | ((std::uint32_t)patch << 8u) | (std::uint32_t)local;
+        }
+
+    //! \brief extract major number from version
+    static constexpr std::uint8_t
+    getMajor(std::uint32_t v)
+        {
+        return std::uint8_t(v >> 24u);
+        }
+
+    //! \brief extract minor number from version
+    static constexpr std::uint8_t
+    getMinor(std::uint32_t v)
+        {
+        return std::uint8_t(v >> 16u);
+        }
+
+    //! \brief extract patch number from version
+    static constexpr std::uint8_t
+    getPatch(std::uint32_t v)
+        {
+        return std::uint8_t(v >> 8u);
+        }
+
+    //! \brief extract local number from version
+    static constexpr std::uint8_t
+    getLocal(std::uint32_t v)
+        {
+        return std::uint8_t(v);
+        }
+};
+
 //!  Sensiron SGPC3 VOC Sensor Class. 
 /*!
   Class for SGCP3 VOC sensor, implent low-power and ultra-power profile with the correct initialization.
 */
-
-class SGPC3
+class SGPC3 : public SGPC3_base
 {
 	public:
-	 
+    //! \brief version of library, for use by clients in static_asserts
+    static constexpr std::uint32_t kVersion = makeVersion(1,1,0,0);
+
+    //! \brief type signature for user-supplied delay function
+    typedef void (delay_millis_t)(void *pClientData, std::uint32_t millis);
+
 		//! Constructor
 		/*!
 			Initialize the sensor mode in low power.
