@@ -32,6 +32,7 @@
 #ifndef SGPC3_H
 #define SGPC3_H
 
+#include <Arduino.h>
 #include <stdint.h>
 
 
@@ -117,8 +118,20 @@ class SGPC3 : public SGPC3_base
 		*/  
 		#ifdef ARDUINO_ARCH_ESP32
 			SGPC3(int sda, int scl, uint32_t frequency);
+			SGPC3(int sda, int scl, uint32_t frequency, delay_millis_s *pDelayMS, void *pDelayMS_Data)
+        : m_pDelayMS(pDelayMS)
+        , m_pDelayMS_clientData(pDelayMS_Data)
+        {
+        SGPC3(sda, scl, frequency);
+        }
 		#else
 			SGPC3();
+			SGPC3(delay_millis_t *pDelayMS, void *pDelayMS_Data)
+        : m_pDelayMS(pDelayMS)
+        , m_pDelayMS_clientData(pDelayMS_Data)
+        {
+        SGPC3();
+        }
 		#endif
 		
 		//! Get the product type.
@@ -247,11 +260,17 @@ class SGPC3 : public SGPC3_base
 		*/
 		const char* getError() const;
 	
-		//! Reamining time before the next measure in ms
+		//! Remaining time before the next measure in ms
 		/*!
 			\return ms remaining before the TVOC update
 		*/
 		int remainingWaitTimeMS();
+
+    //! Delay milliseconds (possibly calling client method)
+    /*!
+      \param ms time to delay in milliseconds.
+    */
+    void delayMS(std::uint32_t ms);
 
 private:
 	//! Read the sensor specs.
@@ -332,7 +351,11 @@ private:
 #else
 	void setError(const __FlashStringHelper* error);
 #endif
-	 
+
+  //! the delegated millisecond delay function.
+  delay_millis_t *m_pDelayMS = nullptr;
+  //! client data pointer for delegated millisecond delay function
+  void *m_pDelayMS_clientData = nullptr;
 };
 
 #endif /* SGPC3_H */

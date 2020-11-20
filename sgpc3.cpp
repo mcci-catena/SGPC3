@@ -63,6 +63,14 @@
 	}
 #endif
 
+void SGPC3::delayMS(std::uint32_t ms)
+	{
+	if (this->m_pDelayMS)
+		this->m_pDelayMS(this->m_pDelayMS_clientData, ms);
+	else
+		this->delayMS(ms);
+	}
+
 int SGPC3::readFeatureSet()
 {
     uint8_t cmd[2] = { 0x20, 0x2f };
@@ -75,7 +83,7 @@ int SGPC3::readFeatureSet()
 			#endif
         return -1;
     }
-    delay(10); //10ms as specified in datasheet
+    this->delayMS(10); //10ms as specified in datasheet
 
     uint8_t data[3] = { 0 };
     int ret = i2c_read(SGPC3_I2C_ADDR, data, 3);
@@ -149,7 +157,7 @@ int SGPC3::selfTest()
 			#endif
       return -1;
 		}
-		delay(220); //220ms as specified in datasheet
+		this->delayMS(220); //220ms as specified in datasheet
 		int ret = i2c_read(SGPC3_I2C_ADDR, mDataBuf, 3);
 		if (ret == -1) 
 		{
@@ -203,7 +211,7 @@ int SGPC3::setBaseline()
 			#endif
       return -1;
     }
-    delay(10); //10ms as specified in datasheet
+    this->delayMS(10); //10ms as specified in datasheet
     return 0;
 }
 
@@ -219,7 +227,7 @@ int SGPC3::getFactoryBaseline(uint16_t* factoryBaseline)
 		#endif
 	  return -1;
 	}
-	delay(10);
+	this->delayMS(10);
 	int ret = i2c_read(SGPC3_I2C_ADDR, mDataBuf, 3);
 	if (ret == -1) {
 		#ifdef ARDUINO_ARCH_ESP32
@@ -267,7 +275,7 @@ int SGPC3::initSGPC3()
 		#endif
 	  return -3;
 	}
-   delay(10);
+   this->delayMS(10);
 	initialized = true;
    return ret;
 }
@@ -304,7 +312,7 @@ int SGPC3::initSGPC3(downTime_t downTime)
 	  return -3;
 	}
 	
-	delay(10);
+	this->delayMS(10);
 	if(downTime != LT_FOREVER)
 	{
 		ret = setBaseline();
@@ -320,7 +328,7 @@ int SGPC3::initSGPC3(downTime_t downTime)
 		delay_time = 184000;
 	
 	if(downTime  != LT_5_MIN)
-		delay(delay_time);
+		this->delayMS(delay_time);
 	initialized = true;
    return ret;
 }
@@ -348,7 +356,7 @@ int SGPC3::setPowerMode()
 			#endif
       return -1;
     }
-    delay(10); //10ms as specified in datasheet
+    this->delayMS(10); //10ms as specified in datasheet
     return 0;
 }
 
@@ -362,7 +370,7 @@ int SGPC3::setAbsHumidityCompensation(uint16_t humidity_8_8) //g/m3
     if (i2c_write(SGPC3_I2C_ADDR, cmd, 5)) {
         return -1;
     }
-    delay(10); //10ms as specified in datasheet
+    this->delayMS(10); //10ms as specified in datasheet
     return 0;
 }
 
@@ -379,7 +387,7 @@ int SGPC3::disableAbsHumidityCompensation()
 			#endif
       return -1;
     }
-    delay(10); //10ms as specified in datasheet
+    this->delayMS(10); //10ms as specified in datasheet
     return 0;
 }
 
@@ -405,7 +413,7 @@ int SGPC3::measureIAQ()
 	  return -1;
 	}
 
-	delay(50);
+	this->delayMS(50);
 
 	int ret = i2c_read(SGPC3_I2C_ADDR, mDataBuf, 3);
 	if (ret == -1) {
@@ -448,7 +456,7 @@ int SGPC3::getBaseline()
 	if (i2c_write(SGPC3_I2C_ADDR, cmd, 2)) {
 	  return -1;
 	}
-	delay(10);
+	this->delayMS(10);
 	int ret = i2c_read(SGPC3_I2C_ADDR, mDataBuf, 3);
 	if (ret == -1) {
 	  return -2;
