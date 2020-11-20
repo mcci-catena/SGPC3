@@ -505,7 +505,7 @@ int SGPC3::remainingWaitTimeMS()
 }
 
 //helper
-int8_t SGPC3::i2c_read(uint8_t addr, uint8_t* data, uint16_t count)
+int8_t SGPC3::i2c_read(uint8_t addr, uint8_t* data, uint8_t count)
 {
     Wire.requestFrom(addr, count);
     if (Wire.available() != count) {
@@ -517,7 +517,7 @@ int8_t SGPC3::i2c_read(uint8_t addr, uint8_t* data, uint16_t count)
     return 0;
 }
 
-int8_t SGPC3::i2c_write(uint8_t addr, const uint8_t* data, uint16_t count)
+int8_t SGPC3::i2c_write(uint8_t addr, const uint8_t* data, uint8_t count)
 {
     Wire.beginTransmission(addr);
     for (int i = 0; i < count; ++i) {

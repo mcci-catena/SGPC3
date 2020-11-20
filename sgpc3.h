@@ -303,7 +303,7 @@ private:
 		\param count number of byte to write from data buffer.
 		\return The write result(0 = OK)
 	*/
-   static int8_t i2c_write(uint8_t addr, const uint8_t* data, uint16_t count);
+   static int8_t i2c_write(uint8_t addr, const uint8_t* data, uint8_t count);
 	
 	//! i2c read on interface
 	/*!
@@ -312,7 +312,7 @@ private:
 		\param count number of byte to read from interface.
 		\return The read result(0 = OK)
 	*/
-   int8_t i2c_read(uint8_t addr, uint8_t* data, uint16_t count);
+   int8_t i2c_read(uint8_t addr, uint8_t* data, uint8_t count);
 	
 	//! crc8 computation
 	/*!
